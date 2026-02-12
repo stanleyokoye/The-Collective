@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Collective</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #D9BC6A;
+      --gold-light: #EDD48E;
+      --gold-pale: #F5E7C1;
+      --gold-dim: #C9A44A;
+      --black: #090909;
+      --black-mid: #111111;
+      --black-soft: #1A1A1A;
+      --black-card: #141414;
+      --off-white: #F8F4EC;
+      --text-muted: #C4BDB4;
+      --text-body: #EAE6DF;
+      --divider: rgba(201,168,76,0.2);
+      --divider-strong: rgba(201,168,76,0.45);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text-body);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 40px 120px;
+    }
+
+    /* ── GOLD LINE ── */
+    .gold-rule {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0;
+    }
+
+    .gold-rule-solid {
+      width: 100%;
+      height: 1px;
+      background: var(--divider-strong);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      display: inline-block;
+      width: 40px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(68px, 10vw, 110px);
+      font-weight: 700;
+      line-height: 0.9;
+      color: var(--off-white);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--gold-dim);
+      letter-spacing: 0.15em;
+      margin-bottom: 56px;
+    }
+
+    .hero-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(22px, 3.5vw, 32px);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--off-white);
+      line-height: 1.3;
+      max-width: 580px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-tagline em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .hero-body {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 72px;
+      line-height: 1.8;
+    }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      border: 1px solid var(--divider-strong);
+      margin-bottom: 0;
+    }
+
+    .stat-cell {
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+    }
+
+    .stat-cell + .stat-cell {
+      border-left: 1px solid var(--divider-strong);
+    }
+
+    .stat-cell.featured {
+      background: linear-gradient(135deg, #1a1408 0%, #0d0d0d 100%);
+    }
+
+    .stat-cell.featured::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .stat-cell:not(.featured) .stat-number {
+      color: var(--off-white);
+    }
+
+    .stat-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 80px 0;
+      border-top: 1px solid var(--divider);
+    }
+
+    section:first-of-type { border-top: none; }
+
+    .section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      page-break-after: avoid;
+      break-after: avoid;
+      margin-bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    .section-body {
+      font-size: 16px;
+      color: var(--text-body);
+      line-height: 1.85;
+      max-width: 700px;
+      margin-bottom: 32px;
+    }
+
+    /* ── PULL QUOTE ── */
+    .pull-quote {
+      margin: 48px 0;
+      padding: 36px 48px;
+      border-left: 2px solid var(--gold);
+      background: linear-gradient(90deg, rgba(201,168,76,0.05) 0%, transparent 100%);
+      position: relative;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .pull-quote::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 100px;
+      color: var(--gold);
+      opacity: 0.15;
+      position: absolute;
+      top: -10px;
+      left: 24px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--off-white);
+      line-height: 1.55;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 12px;
+    }
+
+    .pull-quote cite {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+
+    /* ── COMPARISON ── */
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 8px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .comparison-col {
+      padding: 36px 32px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .comparison-col.without {
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .comparison-col.with {
+      background: linear-gradient(135deg, #1a1408 0%, #111008 100%);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .comparison-heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+    }
+
+    .comparison-col.without .comparison-heading {
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .comparison-col.with .comparison-heading {
+      color: var(--gold);
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .comparison-list {
+      list-style: none;
+    }
+
+    .comparison-list li {
+      font-size: 14px;
+      line-height: 1.65;
+      padding: 10px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .comparison-list li + li {
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .comparison-col.without .comparison-list li {
+      color: #AFA89E;
+    }
+
+    .comparison-col.without .comparison-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: #7a7268;
+    }
+
+    .comparison-col.with .comparison-list li {
+      color: var(--text-body);
+    }
+
+    .comparison-col.with .comparison-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+    }
+
+    .comparison-col.with .comparison-list li + li {
+      border-top-color: rgba(201,168,76,0.06);
+    }
+
+    /* ── MISSION ── */
+    .mission-text {
+      font-family: 'Barlow', sans-serif;
+      font-size: 17px;
+      font-weight: 400;
+      font-style: normal;
+      color: var(--text-body);
+      line-height: 1.85;
+      max-width: 680px;
+    }
+
+    /* ── MEETING STRUCTURE ── */
+    .meeting-items {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .meeting-item {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      background: var(--black-card);
+      border: 1px solid rgba(255,255,255,0.04);
+      overflow: hidden;
+      transition: border-color 0.2s;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .meeting-number {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 16px;
+      background: linear-gradient(180deg, #1a1408 0%, #0d0b06 100%);
+      border-right: 1px solid var(--divider);
+    }
+
+    .meeting-number span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    .meeting-content {
+      padding: 28px 32px;
+    }
+
+    .meeting-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      margin-bottom: 12px;
+    }
+
+    .meeting-body {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 4px;
+    }
+
+    .meeting-list {
+      list-style: none;
+      margin-top: 12px;
+    }
+
+    .meeting-list li {
+      font-size: 14px;
+      color: var(--text-muted);
+      padding: 6px 0 6px 20px;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .meeting-list li::before {
+      content: '·';
+      position: absolute;
+      left: 6px;
+      color: var(--gold-dim);
+    }
+
+    /* ── STANDARDS ── */
+    .standards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .standard-block {
+      background: var(--black-card);
+      border: 1px solid rgba(255,255,255,0.04);
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      overflow: hidden;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .standard-key {
+      padding: 32px 28px;
+      background: linear-gradient(135deg, #161208 0%, #0d0b06 100%);
+      border-right: 1px solid var(--divider);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .standard-key-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .standard-value {
+      padding: 32px 36px;
+    }
+
+    .standard-list {
+      list-style: none;
+      margin-bottom: 12px;
+    }
+
+    .standard-list li {
+      font-size: 14.5px;
+      color: var(--text-body);
+      padding: 7px 0 7px 22px;
+      position: relative;
+      line-height: 1.65;
+    }
+
+    .standard-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold-dim);
+      font-size: 12px;
+      top: 9px;
+    }
+
+    .standard-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--gold-dim);
+      margin-top: 8px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 100px;
+      padding: 48px 0 0;
+      border-top: 1px solid var(--divider-strong);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--off-white);
+      letter-spacing: 0.08em;
+    }
+
+    .footer-note {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero { animation: fadeUp 0.8s ease both; }
+    .stats-row { animation: fadeUp 0.8s ease 0.15s both; }
+    section { animation: fadeUp 0.6s ease both; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .page { padding: 0 24px 80px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-cell + .stat-cell { border-left: none; border-top: 1px solid var(--divider-strong); }
+      .comparison { grid-template-columns: 1fr; }
+      .standard-block { grid-template-columns: 1fr; }
+      .standard-key { border-right: none; border-bottom: 1px solid var(--divider); }
+      .meeting-item { grid-template-columns: 60px 1fr; }
+      .footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+    /* ── PRINT / PDF ── */
+    @media print {
+      section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .meeting-items,
+      .standards-grid,
+      .comparison {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      .stats-row {
+        page-break-before: avoid;
+        break-before: avoid;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <header class="hero">
+    <div class="hero-eyebrow">By Invitation Only</div>
+    <h1 class="hero-title">The Collective</h1>
+    <div class="hero-tagline">Most ambitious people are <em>alone</em> at the top.</div>
+    <p class="hero-body">Most of the people around you don't think like you, aren't as ambitious as you, don't challenge you, and won't hold you accountable to the standard you've set for yourself. That's the problem this group is designed to fix.</p>
+
+    <div class="stats-row">
+      <div class="stat-cell">
+        <span class="stat-number">8</span>
+        <span class="stat-label">Members Max</span>
+      </div>
+      <div class="stat-cell featured">
+        <span class="stat-number">60</span>
+        <span class="stat-label">Minutes Weekly</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-number">0</span>
+        <span class="stat-label">Passive Seats</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── THE CASE ── -->
+  <section>
+    <div class="section-label">The Case for This</div>
+    <p class="section-body">
+      You probably already have some kind of network. What you don't have is a room of people who can look at your actual decisions in real time, tell you what's wrong, and then check whether you did anything about it next week.
+    </p>
+
+    <div class="pull-quote">
+      <p>Associate with people who are likely to improve you.</p>
+      <cite>— Seneca</cite>
+    </div>
+
+    <p class="section-body">
+      The Collective is built differently. Every seat requires active skin in the game. Every meeting has a defined structure that forces progress. Every commitment is binary — it's either done or not done. And the standards are actually enforced.
+    </p>
+    <p class="section-body">
+      The result is compounding. After 90 days in a room like this, your decision speed increases, your blind spots shrink, and your execution rate climbs — because bad excuses don't survive the room.
+    </p>
+
+    <div class="comparison">
+      <div class="comparison-col without">
+        <div class="comparison-heading">Without This Group</div>
+        <ul class="comparison-list">
+          <li>Important decisions made in isolation or with people who won't give honest feedback</li>
+          <li>No external accountability. Goals and deadlines slip by with no consequences</li>
+          <li>Energy spent on the wrong thing because no one called it out or told you it was a terrible idea</li>
+        </ul>
+      </div>
+      <div class="comparison-col with">
+        <div class="comparison-heading">With This Group</div>
+        <ul class="comparison-list">
+          <li>Decisions pressure-tested weekly by peers with real stakes</li>
+          <li>Public commitments with hard binary outcomes</li>
+          <li>Easy access to people in similar situations</li>
+          <li>Problems are easier to solve through group collaboration</li>
+          <li>Every week ends with one clear, measurable next action and accountability for whether you complete it or not</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MISSION ── -->
+  <section>
+    <div class="section-label">Mission</div>
+    <p class="mission-text">
+      A small, private group of active operators and investors who meet weekly to increase each other's execution speed, sharpen decision quality, and enforce the commitments they make to themselves.
+    </p>
+  </section>
+
+  <!-- ── MEETING STRUCTURE ── -->
+  <section>
+    <div class="section-label">Weekly Meeting Structure &middot; 60&ndash;75 min</div>
+    <div class="meeting-items">
+
+      <div class="meeting-item">
+        <div class="meeting-number"><span>01</span></div>
+        <div class="meeting-content">
+          <div class="meeting-title">Scoreboard</div>
+          <p class="meeting-body">Last week's commitment: Done or Not Done. No discussion, no context. The record speaks for itself.</p>
+        </div>
+      </div>
+
+      <div class="meeting-item">
+        <div class="meeting-number"><span>02</span></div>
+        <div class="meeting-content">
+          <div class="meeting-title">Status + Bottleneck</div>
+          <p class="meeting-body">Each person covers two things in order:</p>
+          <ul class="meeting-list">
+            <li>Go over last week's commitment and show proof of completion. If no completion, explain why and what will be fixed this coming week to complete it.</li>
+            <li>Current focus in your business or project and any problems you're running into.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="meeting-item">
+        <div class="meeting-number"><span>03</span></div>
+        <div class="meeting-content">
+          <div class="meeting-title">Commitment Lock-In</div>
+          <p class="meeting-body">One to three concrete, measurable actions for the coming week. Binary, measurable outcomes only. The group can and will veto anything soft or untestable.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── STANDARDS ── -->
+  <section>
+    <div class="section-label">Non-Negotiable Standards</div>
+    <div class="standards-grid">
+
+      <div class="standard-block">
+        <div class="standard-key">
+          <div class="standard-key-label">Attendance</div>
+        </div>
+        <div class="standard-value">
+          <ul class="standard-list">
+            <li>Miss 2 meetings in any 8-week window → removed</li>
+            <li>Arrive late to 2 meetings in any 8-week window → removed</li>
+          </ul>
+          <div class="standard-tagline">No exceptions. No votes.</div>
+        </div>
+      </div>
+
+      <div class="standard-block">
+        <div class="standard-key">
+          <div class="standard-key-label">Execution</div>
+        </div>
+        <div class="standard-value">
+          <ul class="standard-list">
+            <li>2 missed commitments in any 8-week window → removed</li>
+          </ul>
+          <div class="standard-tagline">No exceptions. No votes.</div>
+        </div>
+      </div>
+
+      <div class="standard-block">
+        <div class="standard-key">
+          <div class="standard-key-label">Confidentiality</div>
+        </div>
+        <div class="standard-value">
+          <ul class="standard-list">
+            <li>Everything discussed is fully confidential</li>
+            <li>One violation regardless of intent or severity results in immediate removal</li>
+          </ul>
+          <div class="standard-tagline">Trust is the product. Protect it absolutely.</div>
+        </div>
+      </div>
+
+      <div class="standard-block">
+        <div class="standard-key">
+          <div class="standard-key-label">Membership</div>
+        </div>
+        <div class="standard-value">
+          <ul class="standard-list">
+            <li>Every member must be actively building a business or in the process of acquiring a business or deploying capital into something</li>
+            <li>Advisors, observers, and consultants are not eligible</li>
+          </ul>
+          <div class="standard-tagline">Skin in the game is a prerequisite.</div>
+        </div>
+      </div>
+
+      <div class="standard-block">
+        <div class="standard-key">
+          <div class="standard-key-label">Enforcement</div>
+        </div>
+        <div class="standard-value">
+          <ul class="standard-list">
+            <li>No voting, no group debate, no appeals process</li>
+          </ul>
+          <div class="standard-tagline">The group exists because the standards exist.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-brand">The Collective</div>
+    <div class="footer-note">By Invitation Only</div>
+  </footer>
+
+</div>
+</body>
+</html>
